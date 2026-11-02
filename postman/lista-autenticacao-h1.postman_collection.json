@@ -1,0 +1,75 @@
+{
+  "info": {
+    "name": "Lista de Exercícios - API com autenticação JWT",
+    "description": "Testes obrigatórios do exercício 4. Rode na ordem: o Teste 1 guarda o token usado no Teste 4.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5188" },
+    { "key": "token", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Teste 1 - Login válido",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"usuario\": \"aluno\",\n  \"senha\": \"senha123\"\n}" },
+        "url": "{{baseUrl}}/api/auth/login"
+      },
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('retorna 200 OK', () => pm.response.to.have.status(200));",
+          "const token = pm.response.json().token;",
+          "pm.test('retorna um token JWT', () => pm.expect(token.split('.')).to.have.lengthOf(3));",
+          "pm.collectionVariables.set('token', token);"
+        ] }
+      }]
+    },
+    {
+      "name": "Teste 2 - Login inválido",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"usuario\": \"aluno\",\n  \"senha\": \"senha-errada\"\n}" },
+        "url": "{{baseUrl}}/api/auth/login"
+      },
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('retorna 401 Unauthorized', () => pm.response.to.have.status(401));"
+        ] }
+      }]
+    },
+    {
+      "name": "Teste 3 - Acesso sem token",
+      "request": {
+        "auth": { "type": "noauth" },
+        "method": "GET",
+        "url": "{{baseUrl}}/api/usuario/perfil"
+      },
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('retorna 401 Unauthorized', () => pm.response.to.have.status(401));"
+        ] }
+      }]
+    },
+    {
+      "name": "Teste 4 - Acesso com token válido",
+      "request": {
+        "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+        "method": "GET",
+        "url": "{{baseUrl}}/api/usuario/perfil"
+      },
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('retorna 200 OK', () => pm.response.to.have.status(200));",
+          "pm.test('a mensagem traz o nome do usuário autenticado', () => pm.expect(pm.response.json().mensagem).to.include('aluno'));"
+        ] }
+      }]
+    }
+  ]
+}

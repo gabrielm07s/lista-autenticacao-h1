@@ -1,0 +1,47 @@
+npm warn deprecated har-validator@5.1.5: this library is no longer supported
+npm warn deprecated uuid@3.4.0: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
+npm warn deprecated uuid@8.3.2: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
+npm warn deprecated @faker-js/faker@5.5.3: Please update to a newer version.
+(node:4600) [DEP0176] DeprecationWarning: fs.F_OK is deprecated, use fs.constants.F_OK instead
+(Use `node --trace-deprecation ...` to show where the warning was created)
+newman
+
+Lista de Exercícios - API com autenticação JWT
+
+Root Teste 1 - Login válido
+  POST http://localhost:5188/api/auth/login [200 OK, 409B, 216ms]
+  Pass  retorna 200 OK
+  Pass  retorna um token JWT
+
+Root Teste 2 - Login inválido
+  POST http://localhost:5188/api/auth/login [401 Unauthorized, 331B, 44ms]
+  Pass  retorna 401 Unauthorized
+
+Root Teste 3 - Acesso sem token
+  GET http://localhost:5188/api/usuario/perfil [401 Unauthorized, 128B, 10ms]
+  Pass  retorna 401 Unauthorized
+
+Root Teste 4 - Acesso com token válido
+  GET http://localhost:5188/api/usuario/perfil [200 OK, 218B, 58ms]
+  Pass  retorna 200 OK
+  Pass  a mensagem traz o nome do usuário autenticado
+
+-------------------------------------------------------------------
+|                         |          executed |            failed |
+--------------------------+-------------------+--------------------
+|              iterations |                 1 |                 0 |
+--------------------------+-------------------+--------------------
+|                requests |                 4 |                 0 |
+--------------------------+-------------------+--------------------
+|            test-scripts |                 4 |                 0 |
+--------------------------+-------------------+--------------------
+|      prerequest-scripts |                 0 |                 0 |
+--------------------------+-------------------+--------------------
+|              assertions |                 6 |                 0 |
+-------------------------------------------------------------------
+| total run duration: 673ms                                       |
+-------------------------------------------------------------------
+| total data received: 496B (approx)                              |
+-------------------------------------------------------------------
+| average response time: 82ms [min: 10ms, max: 216ms, s.d.: 79ms] |
+-------------------------------------------------------------------
